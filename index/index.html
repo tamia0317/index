@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Cloud²ti</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #f0eae2 0%, #e0d6cc 100%);
+            font-family: 'Inter', sans-serif;
+            color: #2c2b28;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .test-container {
+            max-width: 750px;
+            width: 100%;
+            margin: 0 auto;
+            background: #fffefa;
+            border-radius: 56px;
+            box-shadow: 0 30px 55px -20px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+        .hero {
+            background: #2f2e2a;
+            color: #faf3e4;
+            padding: 1.6rem 1.8rem;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2rem; letter-spacing: -0.5px; font-weight: 800; }
+        .hero p { opacity: 0.8; font-size: 0.85rem; margin-top: 6px; }
+        .progress-section { padding: 1rem 1.8rem 0.2rem 1.8rem; background: #fffefa; }
+        .progress-stats { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: #8e867a; margin-bottom: 0.4rem; }
+        .progress-bar-bg { background: #e7dfd4; border-radius: 30px; height: 8px; width: 100%; overflow: hidden; }
+        .progress-fill { background: #c44536; width: 0%; height: 100%; border-radius: 30px; transition: width 0.25s ease; }
+        .quiz-content { padding: 1.2rem 1.8rem 1.8rem 1.8rem; }
+        .question-card {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 2rem 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid #efe6dc;
+        }
+        .q-num { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; color: #c44536; margin-bottom: 1rem; }
+        .question-text { font-size: 1.45rem; font-weight: 600; line-height: 1.4; margin-bottom: 2rem; color: #1f1e1b; }
+        .rating-row { display: flex; justify-content: space-between; gap: 0.7rem; flex-wrap: wrap; }
+        .rating-btn {
+            flex: 1; text-align: center; background: #f9f6ef; border-radius: 60px;
+            padding: 0.75rem 0; font-weight: 600; font-size: 0.85rem;
+            border: 1px solid #e5dbcf; cursor: pointer; transition: all 0.15s; color: #4b473f;
+        }
+        .rating-btn.selected { background: #c44536; border-color: #c44536; color: white; box-shadow: 0 6px 12px rgba(196,69,54,0.2); }
+        .nav-buttons { display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.5rem; }
+        .btn { background: #ece4da; border: none; padding: 0.75rem 1.8rem; border-radius: 50px; font-weight: 600; font-family: inherit; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
+        .btn-primary { background: #2f2e2a; color: white; }
+        .btn-primary:hover { background: #c44536; transform: scale(0.97); }
+        .btn-outline { background: transparent; border: 1px solid #ddd2c4; }
+        .btn-outline:disabled { opacity: 0.4; cursor: not-allowed; }
+        .entry-panel { padding: 2rem 1.8rem; text-align: center; }
+        .mode-group { display: flex; gap: 1.2rem; justify-content: center; margin: 1.8rem 0; flex-wrap: wrap; }
+        .mode-btn { background: #f0ede5; border: none; padding: 0.9rem 2rem; font-size: 1rem; font-weight: 700; border-radius: 60px; cursor: pointer; font-family: inherit; transition: 0.2s; }
+        .mode-btn:hover { background: #e2dcd0; transform: translateY(-2px); }
+        .info-card { background: #f8f5ee; border-radius: 28px; padding: 1rem 1.2rem; font-size: 0.85rem; color: #6b6358; text-align: left; }
+        .result-area { padding: 1.5rem 1.8rem 2rem 1.8rem; }
+        .character-visual-box { background: #f3ede3; border-radius: 60px; padding: 1.2rem; margin-bottom: 1.2rem; display: flex; justify-content: center; align-items: center; min-height: 230px; }
+        .result-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .svg-avatar { width: 180px; height: 180px; display: block; }
+        .character-name { font-size: 2rem; font-weight: 800; text-align: center; margin-top: 0.5rem; }
+        .character-desc { color: #5f5b52; line-height: 1.5; text-align: center; margin: 0.8rem 0; font-size: 0.95rem; white-space: pre-line; }
+        .style-note { font-size: 0.7rem; text-align: center; color: #aa9f8c; margin-bottom: 1rem; }
+        .scores-chart { background: #fcfaf5; border-radius: 32px; padding: 1.4rem; margin-top: 1rem; }
+        .chart-item { margin-bottom: 1rem; }
+        .chart-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; margin-bottom: 5px; }
+        .bar-bg { background: #e3dbd0; border-radius: 20px; height: 10px; overflow: hidden; }
+        .bar-fill { background: #c44536; width: 0%; height: 100%; border-radius: 20px; }
+        .reset-btn { background: #2f2e2a; color: white; display: block; margin: 1.5rem auto 0.5rem; padding: 0.7rem 2rem; width: fit-content; cursor: pointer; border: none; border-radius: 50px; font-weight: 600; }
+        footer { font-size: 0.65rem; text-align: center; padding: 1rem; color: #bcb0a0; border-top: 1px solid #eee6dc; }
+        @media (max-width: 550px) { .question-text { font-size: 1.2rem; } .rating-btn { font-size: 0.7rem; padding: 0.6rem 0; } .quiz-content { padding: 1rem; } }
+    </style>
+</head>
+<body>
+<div class="test-container" id="appRoot"></div>
+
+<script>
+(function(){
+    // 角色库
+    const ROLES = [
+        { id: "Angel", name: "Angel", openMin:90, openMax:100, consMin:60, consMax:80, extMin:90, extMax:100, agreeMin:95, agreeMax:100, neuroMin:0, neuroMax:20,
+          desc: "你是坠入纽约水泥丛林中的天使，你舞动的裙摆热情美丽，哪怕是贫穷与疾病也无法打败你金子般的心。", mainColor: "#e63946",
+          imgUrl: "images/Angel.jpg", styleNote: "热情·赤诚" },  
+        { id: "纳木海", name: "纳木海", openMin:60, openMax:80, consMin:80, consMax:100, extMin:85, extMax:100, agreeMin:80, agreeMax:100, neuroMin:0, neuroMax:20,
+          desc: "手握缰绳，听风在你耳边呼啸而过，马背上的颠簸练就你骨血里的赤诚，腾格里胸中的绵云集成你内心的柔情。\n你可以为一个人、为坚定不摧的理想牺牲一切，为他们构筑的城墙固若金汤。莫问你的归处，你的归处是心之所向。", mainColor: "#2a6f4f", 
+          imgUrl: "images/纳木海.jpg", styleNote: "赤诚·守护" },  
+        { id: "安东尼", name: "安东尼", openMin:40, openMax:60, consMin:70, consMax:90, extMin:20, extMax:40, agreeMin:80, agreeMax:100, neuroMin:10, neuroMax:30,
+          desc: "在金钱、法律与人性的博弈中，是你心灵的慷慨、对情谊的坚守和身处绝境时的稳重，让你心口的一磅肉没流下任何一滴血。\n从此威尼斯的商船来来往往，剧院一排一座的人反复无常，唯有爱凝固在时间里，永恒不变。",  mainColor: "#6c757d", 
+          imgUrl: "images/安东尼.jpg", styleNote: "慷慨·稳重" },  
+        { id: "姚远", name: "姚远", openMin:80, openMax:100, consMin:85, consMax:100, extMin:80, extMax:100, agreeMin:75, agreeMax:95, neuroMin:20, neuroMax:40,
+          desc: "青春！奋斗！\n你是坦荡与豪情的集合，怀揣一颗不灭不熄热烫的心，燃烧这平凡无聊的世界。\n加油，姚远，通往梦想的路并不遥远，向着锚定方向稳步前进吧，因为\"远方不是脚到达的地方，而是心超越的地方\"。",  mainColor: "#1e6091", 
+          imgUrl: "images/姚远.jpg", styleNote: "坦荡·豪情" },  
+        { id: "杨晓宇", name: "杨晓宇", openMin:85, openMax:100, consMin:10, consMax:30, extMin:80, extMax:100, agreeMin:30, agreeMax:60, neuroMin:75, neuroMax:95,
+          desc: "在伤痕的掩盖下，叛逆是你的保护色，敲破鸡蛋的外壳，只有真正懂你的人才能触及你内心的柔软。\n是海边的咖啡、月光下的吉他、友情和爱拯救了你，你也可以做其他人的天使，教会他们生命的一切都来得及实现。", mainColor: "#2b2b2b",
+          imgUrl: "images/杨晓宇.jpg", styleNote: "叛逆·柔软" },  
+        { id: "罗密欧", name: "罗密欧", openMin:85, openMax:100, consMin:30, consMax:50, extMin:80, extMax:100, agreeMin:75, agreeMax:95, neuroMin:80, neuroMax:100,
+          desc: "你在诗意与浪漫组成的人生中发问：如果只是为了苟且偷生，那活着又有什么意义？\n随心而行，追随灵魂的指引，家族的对立不过是你拥抱自由的桎梏，冲破它，即使爱和死亡会让你迷失在红与蓝的交界里。", mainColor: "#3b6e8f", 
+          imgUrl: "images/罗密欧.jpg", styleNote: "诗意·浪漫" },  
+        { id: "Michael", name: "Michael", openMin:10, openMax:30, consMin:85, consMax:100, extMin:20, extMax:40, agreeMin:80, agreeMax:100, neuroMin:20, neuroMax:40,
+          desc: "你是那种渴求在世俗中拥有一隅安稳角落的人，也是会游离在喧嚣之外，在节日庆典上独自凝视窗外夜景的人。\n\"人生的一半是在欲语还休、扭头不看和沉默寡言中度过\"，但有时候，不听不想不语不言，真的能让生命的海啸平息吗？",  mainColor: "#5e6472",
+          imgUrl: "images/Michael.jpg", styleNote: "内敛·沉思" }, 
+        { id: "周望高", name: "周望高", openMin:60, openMax:80, consMin:80, consMax:100, extMin:20, extMax:40, agreeMin:60, agreeMax:85, neuroMin:20, neuroMax:40,
+          desc: "望高是你的名字，也是你的枷锁，在妥协与挣扎的撕扯中，你始终都在寻找这两个字的最优解。\n不要试图找到问题的答案，月光下流淌出的泪终会成为你尽力呼吸过的证明，当你作出了坚定的选择时，你就没有踏入同一条河流。",  mainColor: "#4a4e69", 
+          imgUrl: "images/周望高.jpg", styleNote: "挣扎·坚定" }, 
+        { id: "方凯毅", name: "方凯毅", openMin:90, openMax:100, consMin:75, consMax:95, extMin:15, extMax:35, agreeMin:10, agreeMax:30, neuroMin:60, neuroMax:85,
+          desc: "进化史上人类是分明超前的造物，你眼中的世界却墨守成规。或许你的态度受千夫所指，为人所不容，但其实诸神黄昏之时，作为先驱者，是他们没有跟上你的脚步。\n没关系，你要知道，普罗米修斯盗取火种，要受鹫鹰啄食肝脏之苦；婴儿从母体中诞生，本身就带着血痕。", mainColor: "#9c7c5b",
+          imgUrl: "images/方凯毅.jpg", styleNote: "先驱·锋芒" }, 
+        { id: "工欲善", name: "工欲善", openMin:60, openMax:80, consMin:15, consMax:35, extMin:10, extMax:30, agreeMin:30, agreeMax:50, neuroMin:70, neuroMax:90,
+          desc: "你是江南的雨，温柔缱绻也足够潮湿，西湖十景，柳浪闻莺，在你的心里，柳条缠结，黄莺噤声。\n你对纷繁复杂的现实习惯性纠结和沉默，对理想的乌托邦又付出了过多想象力，你试图兼顾二者，但到头来却发现生活不是戏文，在白马非马的故事里，要善用第三人称。", mainColor: "#bc9a6c",
+          imgUrl: "images/工欲善.jpg", styleNote: "纠结·理想" }, 
+        { id: "伊本", name: "伊本", openMin:20, openMax:40, consMin:60, consMax:80, extMin:10, extMax:30, agreeMin:10, agreeMax:30, neuroMin:75, neuroMax:95,
+          desc: "\"伊本是一个孤僻、孤独、懦弱的小孩，但伊本喜欢伪装，假装强势，去伪装自己的内心。\"过往的经历\"让伊本的安全感极度缺失\"，他\"一直在寻找爱却又无所得中度过\"。\n\"伊本就是这样一个始终生活在爱与恨交织里的矛盾体\"，即使拥有了爱，\"这份爱也是从恨里开出的花\"。", mainColor: "#8b5a2b",
+          imgUrl: "images/伊本.jpg", styleNote: "矛盾·孤寂" }, 
+        { id: "贺同", name: "贺同", openMin:75, openMax:95, consMin:70, consMax:90, extMin:85, extMax:100, agreeMin:80, agreeMax:100, neuroMin:20, neuroMax:40,
+          desc: "人类总是讳莫如深地讨论鲜血、伤口与死别。\n而你是个理性与感性交织的医者，在面对悲欢离合与生老病死时，你或许只是一个普通人，但无影灯下，奔涌的血液在你手中也是可以被阻断的河流。\n你要相信，你身处的楼宇人来人往，虽然有苦痛，但更多的是被疗愈好的伤。", mainColor: "#2c7da0",
+          imgUrl: "images/贺同.jpg", styleNote: "理性·治愈" } 
+    ];
+
+    // 28道题目
+    const QUESTION_SET = [
+        { dimension: 'O', reverse: false, textYun: "你会愿意和Rent里的大家成为好朋友并一起唱La Vie Boheme", textRoad: "你会愿意和一群穷困潦倒但有金子般的心的人成为好朋友" },
+        { dimension: 'O', reverse: false, textYun: "嘎子邀请你一起手搓大风声，你觉得你这个点子王的想象力和创造力完全可以胜任，工作学习暂停立刻进组", textRoad: "我的想象力和创造力很丰富，经常能想出别人想不到的新鲜点子" },
+        { dimension: 'O', reverse: false, textYun: "比起一成不变的熟悉生活，你更愿意魂穿村田大树演一场鸡飞狗跳的戏", textRoad: "比起一成不变的熟悉生活，你更愿意魂穿喜剧主角演一场鸡飞狗跳的戏" },
+        { dimension: 'O', reverse: false, textYun: "你能包容和理解嘎厂龙厂每一个人的思维模式和底层逻辑，无论传统意义上的好人与坏人", textRoad: "你能包容和理解戏剧角色的思维模式和底层逻辑，无论传统意义上的好人与坏人" },
+        { dimension: 'O', reverse: false, textYun: "如果有一个机会，你会和弗兰肯斯坦一起探索未知的知识领域", textRoad: "我很享受探索全新的知识领域，不断拓展自己的认知边界" },
+        { dimension: 'C', reverse: false, textYun: "你看剧之前习惯提前制定计划", textRoad: "我做事情习惯制定清晰明确的目标，并且会有计划地一步步推进" },
+        { dimension: 'C', reverse: false, textYun: "如果你是一个热度很高的音乐剧演员，你会愿意回到剧院，潜心创作，为了一个欲望清白地奔波", textRoad: "我对自己承诺的事情有极强的责任心，一定会尽全力做到，绝不敷衍" },
+        { dimension: 'C', reverse: false, textYun: "你有很强的自我约束力，为了云云的1080大池座能克制住当下的即时欲望", textRoad: "你有很强的自我约束力，为了一项稍显奢侈的消费能克制住当下的即时欲望" },
+        { dimension: 'C', reverse: false, textYun: "在方凯毅的团队里，你是第二做事条理清晰、严谨高效的人", textRoad: "在一个科学家的团队里，你是一个做事条理清晰、严谨高效的人" },
+        { dimension: 'C', reverse: true,  textYun: "比起严谨高效的方凯毅，你做事更像随性散漫的史大喜", textRoad: "比起严谨高效的科学家，你做事更像随性散漫的摇滚歌手" },
+        { dimension: 'C', reverse: true,  textYun: "突击检查！搞云期间你爬墙过Ծ‸Ծ", textRoad: "你总是看剧/追星/嗑cp总是三分钟热度，容易喜新厌旧" },
+        { dimension: 'E', reverse: false, textYun: "走在大街上遇到同担，你会立刻冲上去认亲，因为犹豫就会败北", textRoad: "走在大街上遇到同担，你会立刻冲上去认亲，因为犹豫就会败北" },
+        { dimension: 'E', reverse: false, textYun: "你是一个热度很高的音乐剧演员，你愿意放弃职业生涯所积累的名望地位与固有经验，从头学习，挑战其他的舞台艺术形式，追求新的艺术生命", textRoad: "我精力充沛，乐于接受挑战，喜欢充满冒险感的新鲜体验" },
+        { dimension: 'E', reverse: false, textYun: "你性格健谈外放，你觉得在社会的舞台上，你是主角", textRoad: "你性格健谈外放，你觉得在社会的舞台上，你是主角" },
+        { dimension: 'E', reverse: true,  textYun: "比起热闹的社交场合，你更喜欢像嘎子大龙一样在海边发呆睡觉", textRoad: "比起热闹的社交场合，你更喜欢在海边发呆睡觉" },
+        { dimension: 'E', reverse: true,  textYun: "你是声入人心的一名选手，你会选择坐在替补席，静静欣赏其他选手的歌声，在第一次考核时唱一首走心的歌却不讲述其中故事", textRoad: "我在人群中通常含蓄低调，很少主动表达自己，更习惯做一个倾听者" },
+        { dimension: 'E', reverse: true,  textYun: "假如你是老云家的一员，你会劝黄子不要唱极具挑战性的highF", textRoad: "假如参与唱歌竞技类节目，你会劝同组的弟弟不要唱极具挑战性的超高音" },
+        { dimension: 'A', reverse: false, textYun: "假如你是Angel，你看到Collins倒在地上，对你说'他们抢走了我唯一的外套！'，你会主动帮助他", textRoad: "圣诞节期间的街上，你看到一个可怜的男人倒在地上，他对你说'他们抢走了我唯一的外套！'，你会主动帮助他" },
+        { dimension: 'A', reverse: false, textYun: "作为一名音乐剧制作人，你会周密思考每个演员和工作人员在剧中的作用，并为他们着想", textRoad: "作为一名音乐剧制作人，你会周密思考每个演员和工作人员在剧中的作用，并为他们着想" },
+        { dimension: 'A', reverse: false, textYun: "你和老同学一起上声入人心，节目组给你们王不见王的剧本，你会觉得为什么要这么做，这不是骗人吗눈_눈", textRoad: "我乐于信任他人，喜欢和别人合作共赢，而非通过竞争压倒对方" },
+        { dimension: 'A', reverse: false, textYun: "假如你是嘎子，你会猛猛向刘师傅发送敏盒", textRoad: "你是一位有广泛影响力的艺术家，如果你的一生挚爱和另一个很有魅力的艺术家关系亲密，而你正在与这位艺术家共事，你会选择直接公开向大众表达自己对他的情绪" },
+        { dimension: 'A', reverse: true,  textYun: "你是一个对人对事要求很高的音乐剧演员，专业水平达不到你的标准你会笑按淘汰键", textRoad: "你是一个对人对事要求很高的音乐剧演员，专业水平达不到你的标准你会笑按淘汰键" },
+        { dimension: 'A', reverse: true,  textYun: "节目分组考核，比起要和其他人合作的二重唱和三重唱，你更愿意选择自己一个人进独唱的房间", textRoad: "节目分组考核，比起要和其他人合作的二重唱和三重唱，你更愿意选择自己一个人进独唱的房间" },
+        { dimension: 'N', reverse: false, textYun: "艺考时你发现和你同组的考生有老艺术家的专业水平，你会感到绝对的崩溃", textRoad: "艺考时你发现和你同组的考生有老艺术家的专业水平，你会感到绝对的崩溃" },
+        { dimension: 'N', reverse: false, textYun: "假如你是一名音乐剧演员，下班后你会在社交平台上疯狂浏览观众的repo和对自己的评价", textRoad: "假如你是一名音乐剧演员，下班后你会在社交平台上疯狂浏览观众的repo和对自己的评价" },
+        { dimension: 'N', reverse: false, textYun: "假如你是一名音乐剧演员，你的某些做法触怒了5号包厢的魅影，他要拿吊灯砸你，你此时很容易慌乱紧张，难以保持沉着冷静", textRoad: "面对突发的意外状况，我很容易慌乱紧张，难以保持沉着冷静" },
+        { dimension: 'N', reverse: true,  textYun: "假如你是一名刚刚大学毕业的音乐剧演员，第一次担任商演剧男主角，在上台前夕你因为紧张而失声，但你也会努力调整好自己的状态，用完美的演出回馈观众", textRoad: "假如你是一名刚刚大学毕业的音乐剧演员，在担任商演剧男主角时，上台前夕你因为紧张而失声，但你也会努力调整好自己的状态，用完美的演出回馈观众" },
+        { dimension: 'N', reverse: true,  textYun: "你是一个像草原和大海一样胸怀宽广且无忧无虑的人", textRoad: "你是一个像草原和大海一样胸怀宽广且无忧无虑的人" }
+    ];
+    const TOTAL_QS = QUESTION_SET.length;
+
+    let currentMode = null;
+    let answers = new Array(TOTAL_QS).fill(null);
+    let currentIndex = 0;
+    let matchedCharacter = null;
+    let stdScores = null;
+    const app = document.getElementById('appRoot');
+
+    function getClothingPath(role) {
+        const id = role.id;
+        if (id === "Angel") return '<path d="M62 96 L138 96 L148 172 L52 172 Z" fill="#e63946"/><rect x="72" y="98" width="56" height="12" fill="#f4a261" rx="4"/><path d="M92 170 L92 186 L108 186 L108 170" fill="#ffb3c6"/>';
+        if (id === "纳木海") return '<path d="M62 96 L138 96 L146 172 L54 172 Z" fill="#2a6f4f"/><rect x="70" y="90" width="60" height="10" fill="#d4a373" rx="3"/><circle cx="100" cy="85" r="12" fill="#bc6c25"/>';
+        if (id === "安东尼") return '<path d="M62 96 L138 96 L148 172 L52 172 Z" fill="#6c757d"/><rect x="68" y="94" width="64" height="8" fill="#2d6a4f" rx="2"/>';
+        if (id === "姚远") return '<path d="M62 96 L138 96 L146 172 L54 172 Z" fill="#1e6091"/><rect x="52" y="148" width="96" height="28" fill="#6b705c" rx="6"/><rect x="122" y="120" width="18" height="28" fill="#cb997e" rx="3"/>';
+        if (id === "杨晓宇") return '<path d="M58 96 L142 96 L150 172 L50 172 Z" fill="#2b2b2b"/><path d="M68 102 L132 102 L126 130 L74 130 Z" fill="#4a4e69"/><circle cx="100" cy="148" r="9" fill="#a7a7a7"/>';
+        if (id === "罗密欧") return '<path d="M60 96 L140 96 L148 172 L52 172 Z" fill="#3b6e8f"/><path d="M74 94 L126 94 L126 104 L74 104 Z" fill="#e9c46a"/><path d="M84 112 L116 112 L112 130 L88 130 Z" fill="#f4a261"/>';
+        if (id === "Michael") return '<path d="M62 96 L138 96 L148 172 L52 172 Z" fill="#5e6472"/><rect x="78" y="88" width="44" height="10" fill="#b08968" rx="4"/><circle cx="100" cy="102" r="12" fill="#2f3e46"/>';
+        if (id === "周望高") return '<path d="M62 96 L138 96 L148 172 L52 172 Z" fill="#4a4e69"/><path d="M78 92 L122 92 L122 100 L78 100 Z" fill="#b8c0c0"/>';
+        if (id === "方凯毅") return '<path d="M58 96 L142 96 L150 172 L50 172 Z" fill="#9c7c5b"/><path d="M70 94 L130 94 L136 102 L64 102 Z" fill="#d4a373"/><rect x="88" y="140" width="24" height="32" fill="#3e5c4a" rx="4"/>';
+        if (id === "工欲善") return '<path d="M62 96 L138 96 L146 172 L54 172 Z" fill="#bc9a6c"/><rect x="84" y="102" width="32" height="12" fill="#a3b18a" rx="4"/>';
+        if (id === "伊本") return '<path d="M58 96 L142 96 L150 172 L50 172 Z" fill="#8b5a2b"/><path d="M68 102 L132 102 L126 142 L74 142 Z" fill="#b07d62"/>';
+        if (id === "贺同") return '<path d="M62 96 L138 96 L148 172 L52 172 Z" fill="#2c7da0"/><rect x="72" y="96" width="56" height="10" fill="#f8f9fa" rx="4"/>';
+        return '<path d="M62 96 L138 96 L146 172 L54 172 Z" fill="' + role.mainColor + '" opacity="0.9"/>';
+    }
+    
+    function generateRoleSVG(role) {
+        return '<svg class="svg-avatar" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">' +
+            '<rect width="200" height="200" fill="#f3ede3" rx="90"/>' +
+            '<circle cx="100" cy="68" r="26" fill="#E0BC8C" stroke="#C49A6C" stroke-width="1.2"/>' +
+            '<circle cx="90" cy="64" r="2.5" fill="#3e2a21"/><circle cx="110" cy="64" r="2.5" fill="#3e2a21"/>' +
+            '<path d="M92 78 Q100 85 108 78" stroke="#8b5a2b" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
+            getClothingPath(role) +
+        '</svg>';
+    }
+
+    function computeMatch() {
+        let raw = { O:0, C:0, E:0, A:0, N:0 };
+        for (let i=0; i<TOTAL_QS; i++) {
+            let score = answers[i];
+            const q = QUESTION_SET[i];
+            if (q.reverse) score = 6 - score;
+            raw[q.dimension] += score;
+        }
+        const O_std = Math.min(100, Math.max(0, (raw.O - 5) / 20 * 100));
+        const C_std = Math.min(100, Math.max(0, (raw.C - 6) / 24 * 100));
+        const E_std = Math.min(100, Math.max(0, (raw.E - 6) / 24 * 100));
+        const A_std = Math.min(100, Math.max(0, (raw.A - 6) / 24 * 100));
+        const N_std = Math.min(100, Math.max(0, (raw.N - 5) / 20 * 100));
+        stdScores = { O: O_std, C: C_std, E: E_std, A: A_std, N: N_std };
+
+        let best = null, minDev = Infinity;
+        for (let i=0; i<ROLES.length; i++) {
+            const role = ROLES[i];
+            const inRange = function(v,min,max){ return v>=min && v<=max; };
+            if (inRange(O_std,role.openMin,role.openMax) && inRange(C_std,role.consMin,role.consMax) && inRange(E_std,role.extMin,role.extMax) && inRange(A_std,role.agreeMin,role.agreeMax) && inRange(N_std,role.neuroMin,role.neuroMax)) {
+                best = role; break;
+            }
+            let dev = 0;
+            dev += O_std<role.openMin ? role.openMin-O_std : (O_std>role.openMax ? O_std-role.openMax : 0);
+            dev += C_std<role.consMin ? role.consMin-C_std : (C_std>role.consMax ? C_std-role.consMax : 0);
+            dev += E_std<role.extMin ? role.extMin-E_std : (E_std>role.extMax ? E_std-role.extMax : 0);
+            dev += A_std<role.agreeMin ? role.agreeMin-A_std : (A_std>role.agreeMax ? A_std-role.agreeMax : 0);
+            dev += N_std<role.neuroMin ? role.neuroMin-N_std : (N_std>role.neuroMax ? N_std-role.neuroMax : 0);
+            if (dev < minDev) { minDev = dev; best = role; }
+        }
+        matchedCharacter = best || ROLES[0];
+    }
+
+    function renderEntry() {
+        app.innerHTML = '<div class="hero"><h1>🎭 Cloud² 测试</h1><p>大五人格 · 音乐剧角色镜像</p></div>' +
+            '<div class="entry-panel"><h3>✨ 选择你的版本 ✨</h3><div class="mode-group">' +
+            '<button class="mode-btn" data-mode="yun">💜 我是云女</button><button class="mode-btn" data-mode="road">🌿 我是路人</button></div>' +
+            '<div class="info-card">📌 基于大五人格模型，共28题，每题单独作答。<br>评分：1=完全不符合　2=不太符合　3=一般　4=比较符合　5=完全符合</div></div>';
+        
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                currentMode = this.getAttribute('data-mode');
+                answers.fill(null);
+                currentIndex = 0;
+                renderQuiz();
+            });
+        });
+    }
+
+    function renderQuiz() {
+        const isYun = currentMode === 'yun';
+        const q = QUESTION_SET[currentIndex];
+        const questionText = isYun ? q.textYun : q.textRoad;
+        const selectedVal = answers[currentIndex];
+        const progressPercent = (currentIndex / TOTAL_QS) * 100;
+        let ratingHtml = '';
+        for (let s=1; s<=5; s++) {
+            ratingHtml += '<div class="rating-btn ' + (selectedVal===s ? 'selected' : '') + '" data-score="' + s + '">' + s + '</div>';
+        }
+        app.innerHTML = '<div class="hero"><h1>📋 ' + (isYun ? '云女版' : '路人版') + '</h1><p>遵从内心 · 逐题作答</p></div>' +
+            '<div class="progress-section"><div class="progress-stats"><span>第 ' + (currentIndex+1) + ' / ' + TOTAL_QS + ' 题</span><span>' + Math.round(progressPercent) + '%</span></div>' +
+            '<div class="progress-bar-bg"><div class="progress-fill" style="width: ' + progressPercent + '%;"></div></div></div>' +
+            '<div class="quiz-content"><div class="question-card"><div class="q-num">QUESTION ' + (currentIndex+1) + '</div>' +
+            '<div class="question-text">' + questionText + '</div><div class="rating-row">' + ratingHtml + '</div></div>' +
+            '<div class="nav-buttons"><button class="btn btn-outline" id="prevBtn"' + (currentIndex===0 ? ' disabled' : '') + '>◀ 上一题</button>' +
+            '<button class="btn btn-primary" id="nextBtn">' + (currentIndex===TOTAL_QS-1 ? '✨ 完成测试 ✨' : '下一题 ▶') + '</button></div></div>';
+        
+        document.querySelectorAll('.rating-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                answers[currentIndex] = parseInt(this.getAttribute('data-score'));
+                renderQuiz();
+            });
+        });
+        const prevBtn = document.getElementById('prevBtn');
+        if (prevBtn) prevBtn.addEventListener('click', () => { if(currentIndex>0){ currentIndex--; renderQuiz(); } });
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) nextBtn.addEventListener('click', () => {
+            if(answers[currentIndex]===null){ alert("请先选择评分 (1~5)"); return; }
+            if(currentIndex===TOTAL_QS-1){ computeMatch(); renderResult(); }
+            else { currentIndex++; renderQuiz(); }
+        });
+    }
+
+    function renderResult() {
+        if(!matchedCharacter || !stdScores) return;
+        const role = matchedCharacter;
+        let visualHtml = '';
+        if (role.imgUrl && role.imgUrl.trim() !== '') {
+            visualHtml = `<img src="${role.imgUrl}" class="result-image" alt="${role.name}" onerror="this.onerror=null; this.src=''; this.outerHTML='${generateRoleSVG(role).replace(/'/g, "\\'")}';">`;
+        } else {
+            visualHtml = generateRoleSVG(role);
+        }
+        
+        const chartItems = [
+            { label: "开放性 Openness", score: stdScores.O },
+            { label: "尽责性 Conscientiousness", score: stdScores.C },
+            { label: "外向性 Extraversion", score: stdScores.E },
+            { label: "宜人性 Agreeableness", score: stdScores.A },
+            { label: "神经质 Neuroticism", score: stdScores.N }
+        ];
+        let barsHtml = '';
+        for (let i=0; i<chartItems.length; i++) {
+            barsHtml += '<div class="chart-item">' +
+                '<div class="chart-label"><span>' + chartItems[i].label + '</span><span>' + Math.round(chartItems[i].score) + '</span></div>' +
+                '<div class="bar-bg"><div class="bar-fill" style="width: ' + chartItems[i].score + '%;"></div></div>' +
+            '</div>';
+        }
+        
+        app.innerHTML = '<div class="hero"><h1>✨ 你的灵魂角色 ✨</h1><p>大五人格映射 · 专属戏剧人格</p></div>' +
+            '<div class="result-area">' +
+            '<div class="character-visual-box">' + visualHtml + '</div>' +
+            '<div class="character-name">' + role.name + '</div>' +
+            '<div class="character-desc">' + role.desc + '</div>' +
+            '<div class="style-note">🎨 形象灵感：' + role.styleNote + '</div>' +
+            '<div class="scores-chart"><h3 style="margin-bottom:1rem;">📊 五维度剖面图</h3>' + barsHtml + '</div>' +
+            '<button class="reset-btn" id="restartBtn">🔄 重新测试</button>' +
+            '</div>' +
+            '<footer>Cloud² 测试 · 基于大五人格匹配音乐剧角色</footer>';
+        
+        const resetBtn = document.getElementById('restartBtn');
+        if (resetBtn) resetBtn.addEventListener('click', () => {
+            currentMode = null;
+            answers.fill(null);
+            currentIndex = 0;
+            matchedCharacter = null;
+            stdScores = null;
+            renderEntry();
+        });
+    }
+
+    renderEntry();
+})();
+</script>
+</body>
+</html>
